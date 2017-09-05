@@ -13,7 +13,7 @@
       </div>
     </div>
     <div class='row'></div>
-    <div class='full-row' v-for="contract in contracts" key="contract.xml_id">
+    <div class='row' v-for="contract in contracts" key="contract.xml_id">
       <div class='column-company'>
         {{ contract.organization }}
       </div>
@@ -40,23 +40,17 @@
         {{ day }}
       </div>
     </div>
-    <div class='full-row' v-for="contract in contracts" key="'days|' + contract.xml_id">
-      <div class="plan row">
-        <div class='day' v-for='day in daysInMonth'></div>
-        <div
-          class="timeline timeline-plan"
-          :class="'offset-' + contract.plan_work_dates.start_date + ' ' + 'width-' + (contract.plan_work_dates.end_date - contract.plan_work_dates.start_date)"
-        ></div>
-      </div>
-      <div class="fact row">
-        <div class='day' v-for='day in daysInMonth'></div>
-        <div
-          class="timeline timeline-fact"
-          :class="'offset-' + contract.fact_work_dates.start_date + ' ' + 'width-' + (contract.fact_work_dates.end_date - contract.fact_work_dates.start_date)"
-        ></div>
-      </div>
+    <div class='full' v-for="contract in contracts" key="'days|' + contract.xml_id">
       <div class="real row">
         <div class='day' v-for='day in daysInMonth' :class="{'day-with-events': (contract.jira_work_dates.indexOf(String(day)) > -1)}"></div>
+        <div
+        class="timeline timeline-plan"
+        :class="'offset-' + contract.plan_work_dates.start_date + ' ' + 'width-' + (contract.plan_work_dates.end_date - contract.plan_work_dates.start_date)"
+        ></div>
+        <div
+        class="timeline timeline-fact"
+        :class="'offset-' + contract.fact_work_dates.start_date + ' ' + 'width-' + (contract.fact_work_dates.end_date - contract.fact_work_dates.start_date)"
+        ></div>
       </div>
     </div>
   </div>
@@ -196,7 +190,7 @@ $gridColumns: 31
 @for $i from 1 through $gridColumns
   .offset-#{$i}
     position: absolute
-    left: calc(#{$dayWidth} * #{$i})
+    left: calc(#{$dayWidth} * (#{$i} - 1))
 
 @for $i from 1 through $gridColumns
   .width-#{$i}
@@ -263,14 +257,15 @@ $gridColumns: 31
 
   .timeline
     z-index: 100
-    height: $dayHeight / 2
     top: 50%
     transform: translateY(-50%)
 
   .timeline.timeline-plan
+    height: $dayHeight / 2 + 8px
     background-color: green
 
   .timeline.timeline-fact
+    height: $dayHeight / 2 - 8px
     background-color: yellow
 
   .timeline.timeline-events

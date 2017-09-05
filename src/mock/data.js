@@ -8,10 +8,10 @@ module.exports = [{
     "end_date": "25"
   },
   "fact_work_dates": {
-    "start_date": "17",
-    "end_date": "31"
+    "start_date": "15",
+    "end_date": "27"
   },
-  "jira_work_dates": ["15", "16", "18", "20", "25", "26"]
+  "jira_work_dates": ["15", "16", "18", "20", "25", "28"]
 }, {
   "xml_id": "9d77f9eb-1396-11e7-b830-00155d014203",
   "organization": "ArealIdea",
@@ -23,7 +23,7 @@ module.exports = [{
   },
   "fact_work_dates": {
     "start_date": "8",
-    "end_date": "22"
+    "end_date": "27"
   },
-  "jira_work_dates": ["13", "16", "18", "23", "27"]
+  "jira_work_dates": ["8", "13", "16", "18", "23", "27"]
 }]
