@@ -1,6 +1,6 @@
 <template id='calendar'>
 <div class="calendar-layout">
-  <div class='column'>
+  <div class='left-column'>
     <div class='header'>
       <div class='column-company'>
         Company
@@ -13,7 +13,7 @@
       </div>
     </div>
     <div class='row'></div>
-    <div class='row' v-for="contract in contracts" key="contract.xml_id">
+    <div class='full-row' v-for="contract in contracts" key="contract.xml_id">
       <div class='column-company'>
         {{ contract.organization }}
       </div>
@@ -40,8 +40,23 @@
         {{ day }}
       </div>
     </div>
-    <div class='row'>
-      <div class='day' v-for='day in daysInMonth'>
+    <div class='full-row' v-for="contract in contracts" key="'days|' + contract.xml_id">
+      <div class="plan row">
+        <div class='day' v-for='day in daysInMonth'>
+        </div>
+        <div class="timeline" :class="'offset-' + contract.plan_work_dates.start_date">
+          {{ contract.plan_work_dates.start_date }}
+        </div>
+      </div>
+      <div class="fact row">
+        <div class='day' v-for='day in daysInMonth'>
+
+        </div>
+      </div>
+      <div class="work row">
+        <div class='day' v-for='day in daysInMonth'>
+
+        </div>
       </div>
     </div>
   </div>
@@ -168,7 +183,7 @@ $headerBackground: $themeColor
 $headerColor: white
 $headerMinHeight: 60px
 
-$rowMinHeight: 52px
+$rowMinHeight: 50px
 
 $dayColor: #3a3a3a
 $dayBorder: solid 1px #aaaaaa
@@ -225,19 +240,33 @@ $dayHeight: 50px
   color: $dayColor
   background-color: $dayBackgroundColor
   border: $dayBorder
+  // border-right: $dayBorder
   cursor: default
 
 .row
   display: flex
+  position: relative
   min-height: $rowMinHeight
   color: $dayColor
-  background-color: $dayBackgroundColor
-  // border-bottom: $dayBorder
+  // background-color: $dayBackgroundColor
+
+  .timeline
+    position: absolute
+    left: 20px
+
 .column-company
   width: 80px
 .column-client
   width: 80px
 .column-contract
   width: 120px
+
+.full-row
+  min-height: $rowMinHeight * 3 + 2px
+  border-top: $dayBorder
+  border-bottom: $dayBorder
+
+.left-column .full-row
+  display: flex
 
 </style>
