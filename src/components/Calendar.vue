@@ -42,21 +42,21 @@
     </div>
     <div class='full-row' v-for="contract in contracts" key="'days|' + contract.xml_id">
       <div class="plan row">
-        <div class='day' v-for='day in daysInMonth'>
-        </div>
-        <div class="timeline" :class="'offset-' + contract.plan_work_dates.start_date">
-          {{ contract.plan_work_dates.start_date }}
-        </div>
+        <div class='day' v-for='day in daysInMonth'></div>
+        <div
+          class="timeline timeline-plan"
+          :class="'offset-' + contract.plan_work_dates.start_date + ' ' + 'width-' + (contract.plan_work_dates.end_date - contract.plan_work_dates.start_date)"
+        ></div>
       </div>
       <div class="fact row">
-        <div class='day' v-for='day in daysInMonth'>
-
-        </div>
+        <div class='day' v-for='day in daysInMonth'></div>
+        <div
+          class="timeline timeline-fact"
+          :class="'offset-' + contract.fact_work_dates.start_date + ' ' + 'width-' + (contract.fact_work_dates.end_date - contract.fact_work_dates.start_date)"
+        ></div>
       </div>
-      <div class="work row">
-        <div class='day' v-for='day in daysInMonth'>
-
-        </div>
+      <div class="real row">
+        <div class='day' v-for='day in daysInMonth' :class="{'day-with-events': (contract.jira_work_dates.indexOf(String(day)) > -1)}"></div>
       </div>
     </div>
   </div>
@@ -191,6 +191,17 @@ $dayBackgroundColor: white
 $dayWidth: 30px
 $dayHeight: 50px
 
+$gridColumns: 31
+
+@for $i from 1 through $gridColumns
+  .offset-#{$i}
+    position: absolute
+    left: calc(#{$dayWidth} * #{$i})
+
+@for $i from 1 through $gridColumns
+  .width-#{$i}
+    width: calc(#{$dayWidth} * #{$i})
+
 *
   box-sizing: border-box
 
@@ -251,8 +262,22 @@ $dayHeight: 50px
   // background-color: $dayBackgroundColor
 
   .timeline
-    position: absolute
-    left: 20px
+    z-index: 100
+    height: $dayHeight / 2
+    top: 50%
+    transform: translateY(-50%)
+
+  .timeline.timeline-plan
+    background-color: green
+
+  .timeline.timeline-fact
+    background-color: yellow
+
+  .timeline.timeline-events
+    background-color: red
+
+.day-with-events
+  background-color: red
 
 .column-company
   width: 80px

@@ -8,7 +8,7 @@ module.exports = [{
     "end_date": "25"
   },
   "fact_work_dates": {
-    "start_date": "15",
+    "start_date": "17",
     "end_date": "31"
   },
   "jira_work_dates": ["15", "16", "18", "20", "25", "26"]
@@ -19,11 +19,11 @@ module.exports = [{
   "name": "120416ZAN1_67",
   "plan_work_dates": {
     "start_date": "10",
-    "end_date": "20"
+    "end_date": "14"
   },
   "fact_work_dates": {
-    "start_date": "10",
-    "end_date": "20"
+    "start_date": "8",
+    "end_date": "22"
   },
   "jira_work_dates": ["13", "16", "18", "23", "27"]
 }]
