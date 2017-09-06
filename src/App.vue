@@ -1,6 +1,6 @@
 <template>
   <div id="app">
-    <calendar :contracts="contracts"/>
+    <calendar :contracts="contracts" :weekends="weekends"/>
   </div>
 </template>
 
@@ -15,7 +15,8 @@ export default {
   },
   data () {
     return {
-      contracts: data
+      contracts: data.contracts,
+      weekends: data.weekends
     }
   }
 }

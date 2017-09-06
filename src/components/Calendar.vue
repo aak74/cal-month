@@ -1,27 +1,18 @@
 <template id='calendar'>
 <div class="calendar-layout">
-  <div class='left-column'>
-    <div class='header'>
-      <div class='column-company'>
-        Company
-      </div>
-      <div class='column-client'>
-        Client
-      </div>
-      <div class='column-contract'>
-        Contract
-      </div>
+  <div class='sidebar'>
+    <div class='sidebar-header'>
+      <div class='column-number'>№</div>
+      <div class='column-company'>Компания</div>
+      <div class='column-client'>Клиент</div>
+      <div class='column-contract'>Договор</div>
     </div>
-    <div class='row'></div>
-    <div class='row' v-for="contract in contracts" key="contract.xml_id">
-      <div class='column-company'>
-        {{ contract.organization }}
-      </div>
-      <div class='column-client'>
-        {{ contract.contragent }}
-      </div>
-      <div class='column-contract'>
-        {{ contract.name }}
+    <div class="contracts">
+      <div class='row' v-for="(contract, key) in contracts" key="contract.xml_id">
+        <div class='column-number'>{{ key + 1 }}</div>
+        <div class='column-company'>{{ contract.organization }}</div>
+        <div class='column-client'>{{ contract.contragent }}</div>
+        <div class='column-contract'>{{ contract.name }}</div>
       </div>
     </div>
   </div>
@@ -36,13 +27,21 @@
       <a class='arrow' @click='moveNextYear'>&raquo;</a>
     </div>
     <div class='row month-days'>
-      <div class='day' v-for='day in daysInMonth'>
-        {{ day }}
-      </div>
+      <div
+        v-for='day in days'
+        class='day day-header'
+        :class="{'day-weekend': (weekends.indexOf(String(day.day)) > -1)}"
+      ><span class="day-number">{{ day.day }}</span><span class="day-weekday">{{ day.weekday }}</span></div>
     </div>
     <div class='full' v-for="contract in contracts" key="'days|' + contract.xml_id">
       <div class="real row">
-        <div class='day' v-for='day in daysInMonth' :class="{'day-with-events': (contract.jira_work_dates.indexOf(String(day)) > -1)}"></div>
+        <div
+          class='day'
+          v-for='day in daysInMonth'
+          :class="{
+            'day-with-events': (contract.jira_work_dates.indexOf(String(day)) > -1),
+            'day-weekend': (weekends.indexOf(String(day)) > -1)}"
+          ></div>
         <div
         class="timeline timeline-plan"
         :class="'offset-' + contract.plan_work_dates.start_date + ' ' + 'width-' + (contract.plan_work_dates.end_date - contract.plan_work_dates.start_date)"
@@ -61,6 +60,7 @@
 <script>
 // Calendar data
 const _daysInMonths = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
+const _dayLabels = ['вс', 'пн', 'вт', 'ср', 'чт', 'пт', 'сб', 'вс'];
 const _monthLabels = ['Январь', 'Февраль', 'Март', 'Апрель', 'Май', 'Июнь', 'Июль', 'Август', 'Сентябрь', 'Октябрь', 'Ноябрь', 'Декабрь'];
 const _today = new Date();
 const _todayComps = {
@@ -70,7 +70,7 @@ const _todayComps = {
 };
 
 export default {
-  props: ['contracts', 'events'],
+  props: ['contracts', 'weekends'],
   data() {
     return {
       month: _todayComps.month,
@@ -84,32 +84,6 @@ export default {
     },
     isLeapYear() {
       return (this.year % 4 === 0 && this.year % 100 !== 0) || this.year % 400 === 0;
-    },
-    // Day/month/year components for previous month
-    previousMonthComps() {
-      if (this.month === 1) return {
-        days: _daysInMonths[11],
-        month: 12,
-        year: this.year - 1,
-      }
-      return {
-        days: (this.month === 3 && this.isLeapYear) ? 29 : _daysInMonths[this.month - 2],
-        month: this.month - 1,
-        year: this.year,
-      };
-    },
-    // Day/month/year components for next month
-    nextMonthComps() {
-      if (this.month === 12) return {
-        days: _daysInMonths[0],
-        month: 1,
-        year: this.year + 1,
-      };
-      return {
-        days: (this.month === 2 && this.isLeapYear) ? 29 : _daysInMonths[this.month],
-        month: this.month + 1,
-        year: this.year,
-      };
     },
     // State for calendar header (no dependencies yet...)
     months() {
@@ -132,6 +106,14 @@ export default {
       if (this.month === 2 && this.isLeapYear) return 29;
       // ...Just a normal month
       return _daysInMonths[this.monthIndex];
+    },
+    days() {
+      let days = []
+      for (var i = 0; i < this.daysInMonth; i++) {
+        let dt = new Date(this.year, this.monthIndex, i + 1)
+        days.push({day: i+1, weekday: _dayLabels[dt.getDay()]})
+      }
+      return days
     },
   },
   methods: {
@@ -177,13 +159,13 @@ $headerBackground: $themeColor
 $headerColor: white
 $headerMinHeight: 60px
 
-$rowMinHeight: 50px
-
 $dayColor: #3a3a3a
 $dayBorder: solid 1px #aaaaaa
 $dayBackgroundColor: white
-$dayWidth: 30px
-$dayHeight: 50px
+$dayWidth: 24px
+$dayHeight: 57px
+$rowMinHeight: $dayHeight
+$timelineHeight: $dayHeight / 3
 
 $gridColumns: 31
 
@@ -194,10 +176,20 @@ $gridColumns: 31
 
 @for $i from 1 through $gridColumns
   .width-#{$i}
-    width: calc(#{$dayWidth} * #{$i})
+    width: calc(#{$dayWidth} * (#{$i} + 1))
 
 *
   box-sizing: border-box
+
+.header
+  display: flex
+  justify-content: stretch
+  align-items: center
+  min-height: $headerMinHeight
+  // color: $headerColor
+  padding: $headerPadding
+  // background-color: $headerBackground
+
 
 .calendar-layout
   display: flex
@@ -206,87 +198,112 @@ $gridColumns: 31
   display: flex
   flex-direction: column
 
-.header
-  display: flex
-  justify-content: stretch
-  align-items: center
-  min-height: $headerMinHeight
-  color: $headerColor
-  padding: $headerPadding
-  border-width: $headerBorderWidth
-  border-style: $headerBorderStyle
-  border-color: $headerBorderColor
-  background-color: $headerBackground
+  .header
+    // display: flex
+    // justify-content: stretch
+    // align-items: center
+    // min-height: $headerMinHeight
+    color: $headerColor
+    // padding: $headerPadding
+    background-color: $headerBackground
 
-  =pointer()
-    cursor: pointer
-    &:hover
-      color: #dcdcdc
+    =pointer()
+      cursor: pointer
+      &:hover
+        color: #dcdcdc
 
-  .arrow
-    +pointer
-    padding: 0 0.4em 0.2em 0.4em
-    font-size: 1.8rem
-    font-weight: 500
-    user-select: none
-    flex-grow: 0
+    .arrow
+      +pointer
+      padding: 0 0.4em 0.2em 0.4em
+      font-size: 1.8rem
+      font-weight: 500
+      user-select: none
+      flex-grow: 0
 
-  .title
-    +pointer
-    flex-grow: 1
-    font-size: 1.2rem
-    text-align: center
+    .title
+      +pointer
+      flex-grow: 1
+      font-size: 1.2rem
+      text-align: center
 
 .day
   width: $dayWidth
   height: $dayHeight
+  min-height: $dayHeight
   justify-content: center
   align-items: center
   color: $dayColor
   background-color: $dayBackgroundColor
-  border: $dayBorder
-  // border-right: $dayBorder
+  // border-bottom: $dayBorder
+  border-right: $dayBorder
   cursor: default
+
+.day-header
+  text-align: center
+
+  span
+    display: block
+
+  span.day-weekday
+    font-size: 80%
 
 .row
   display: flex
   position: relative
   min-height: $rowMinHeight
+  // min-height: $rowMinHeight
   color: $dayColor
+  border-bottom: $dayBorder
   // background-color: $dayBackgroundColor
 
   .timeline
     z-index: 100
-    top: 50%
-    transform: translateY(-50%)
 
   .timeline.timeline-plan
-    height: $dayHeight / 2 + 8px
+    height: $dayHeight / 3
     background-color: green
 
   .timeline.timeline-fact
-    height: $dayHeight / 2 - 8px
+    top: 33%
+    height: $dayHeight / 3
     background-color: yellow
 
-  .timeline.timeline-events
-    background-color: red
-
 .day-with-events
-  background-color: red
+  border-bottom: solid red $dayHeight / 3 - 1px
 
-.column-company
-  width: 80px
-.column-client
-  width: 80px
+.day-weekend
+  background: #e7eef1
+
+.column-number,
+.column-company,
+.column-client,
 .column-contract
-  width: 120px
+  border-right: $dayBorder
 
-.full-row
-  min-height: $rowMinHeight * 3 + 2px
+.column-number
+  width: 30px
+  text-align: center
+.column-company
+  width: 100px
+.column-client
+  width: 100px
+.column-contract
+  width: 160px
+
+.sidebar
+  border-left: $dayBorder
   border-top: $dayBorder
+  .row
+    min-height: $rowMinHeight + 1px
+// .sidebar .full-row
+.sidebar-header
+  display: flex
+  height: $rowMinHeight + $headerMinHeight
   border-bottom: $dayBorder
 
-.left-column .full-row
-  display: flex
+  .column-company,
+  .column-client,
+  .column-contract
+    text-align: center
 
 </style>
