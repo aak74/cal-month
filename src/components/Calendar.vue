@@ -118,30 +118,30 @@ export default {
   },
   methods: {
     moveThisMonth() {
-      this.month = _todayComps.month;
-      this.year = _todayComps.year;
+      this.month = _todayComps.month
+      this.year = _todayComps.year
     },
     moveNextMonth() {
-      const {
-        month,
-        year
-      } = this.nextMonthComps;
-      this.month = month;
-      this.year = year;
+      if (this.month < 12) {
+        this.month++
+      } else {
+        this.month = 1
+        this.year++
+      }
     },
     movePreviousMonth() {
-      const {
-        month,
-        year
-      } = this.previousMonthComps;
-      this.month = month;
-      this.year = year;
+      if (this.month > 1) {
+        this.month--
+      } else {
+        this.month = 12
+        this.year--
+      }
     },
     moveNextYear() {
-      this.year++;
+      this.year++
     },
     movePreviousYear() {
-      this.year--;
+      this.year--
     },
   },
 }
