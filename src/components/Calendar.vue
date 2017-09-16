@@ -120,6 +120,7 @@ export default {
     moveThisMonth() {
       this.month = _todayComps.month
       this.year = _todayComps.year
+      this.$emit('monthChanged', {year: this.year, month: this.month})
     },
     moveNextMonth() {
       if (this.month < 12) {
@@ -128,6 +129,7 @@ export default {
         this.month = 1
         this.year++
       }
+      this.$emit('monthChanged', {year: this.year, month: this.month})
     },
     movePreviousMonth() {
       if (this.month > 1) {
@@ -136,12 +138,15 @@ export default {
         this.month = 12
         this.year--
       }
+      this.$emit('monthChanged', {year: this.year, month: this.month})
     },
     moveNextYear() {
       this.year++
+      this.$emit('monthChanged', {year: this.year, month: this.month})
     },
     movePreviousYear() {
       this.year--
+      this.$emit('monthChanged', {year: this.year, month: this.month})
     },
   },
 }

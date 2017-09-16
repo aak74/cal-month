@@ -1,12 +1,16 @@
 <template>
   <div id="app">
-    <calendar :contracts="contracts" :weekends="weekends"/>
+    <calendar :contracts="contracts" :weekends="weekends" @monthChanged="loadMonthData"/>
   </div>
 </template>
 
 <script>
 import Calendar from './components/Calendar'
-import data from './mock/data'
+import mock from './mock/data'
+const axios = require('axios')
+
+
+const state = require('./state')
 
 export default {
   name: 'app',
@@ -15,9 +19,38 @@ export default {
   },
   data () {
     return {
-      contracts: data.contracts,
-      weekends: data.weekends
+      contracts: this.contracts,
+      weekends: this.weekends
     }
+  },
+  // computed: {
+  //   contracts () {
+  //     return this.data.contracts
+  //   },
+  //   weekends () {
+  //     return this.data.weekends
+  //   },
+  // },
+  created () {
+    this.contracts = []
+    this.weekends = []
+  },
+  methods: {
+    loadMonthData(payload) {
+      // axios.get(
+      //   '/efficiency/ajax.php', {
+      //     type: 'get_calendar_contract',
+      //     year: this.year,
+      //     month: this.month
+      //   }
+      // ).then(response => {
+      //   console.log('response', response);
+      //
+      // })
+      this.weekends = mock.weekends
+      this.contracts = mock.contracts
+      console.log('monthChanged', payload);
+    },
   }
 }
 </script>
