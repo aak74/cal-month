@@ -29,13 +29,14 @@ module.exports = {
     assetsPublicPath: '/',
     // proxyTable: {},
     proxyTable: {
-      '/efficiency/ajax.php': {
-        target: 'http://dev.portal.arealidea.ru/efficiency/ajax.php',
+      '/efficiency': {
+        target: 'http://dev.portal.arealidea.ru/efficiency',
         changeOrigin: true,
-        auth: 'api:H6odLfWk',
-        pathRewrite: {
-          '^/efficiency/ajax.php': ''
-        }
+        auth: 'admin:EV0fuHH6odLfWkE1KHdL',
+        // auth: 'api:H6odLfWk',
+        // pathRewrite: {
+        //   '^/efficiency/ajax.php': ''
+        // }
       }
     },
     // CSS Sourcemaps off by default because relative paths are "buggy"

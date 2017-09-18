@@ -23,33 +23,23 @@ export default {
       weekends: this.weekends
     }
   },
-  // computed: {
-  //   contracts () {
-  //     return this.data.contracts
-  //   },
-  //   weekends () {
-  //     return this.data.weekends
-  //   },
-  // },
   created () {
     this.contracts = []
     this.weekends = []
   },
   methods: {
     loadMonthData(payload) {
-      // axios.get(
-      //   '/efficiency/ajax.php', {
-      //     type: 'get_calendar_contract',
-      //     year: this.year,
-      //     month: this.month
-      //   }
-      // ).then(response => {
-      //   console.log('response', response);
-      //
-      // })
-      this.weekends = mock.weekends
-      this.contracts = mock.contracts
       console.log('monthChanged', payload);
+      axios.get(
+        '/efficiency/ajax.php?type=get_calendar_contract&year='
+          + payload.year
+          + '&month=' + payload.month
+      ).then(response => {
+        console.log('response', response);
+
+      })
+      // this.weekends = mock.weekends
+      // this.contracts = mock.contracts
     },
   }
 }
