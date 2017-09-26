@@ -77,6 +77,9 @@ export default {
       year: _todayComps.year,
     };
   },
+  created () {
+    this.$emit('monthChanged', {year: this.year, month: this.month})
+  },
   computed: {
     // Our component exposes month as 1-based, but sometimes we need 0-based
     monthIndex() {

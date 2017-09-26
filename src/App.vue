@@ -36,6 +36,8 @@ export default {
           + '&month=' + payload.month
       ).then(response => {
         console.log('response', response);
+        this.weekends = response.data.weekends
+        this.contracts = response.data.contracts
 
       })
       // this.weekends = mock.weekends
