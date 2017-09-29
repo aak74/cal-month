@@ -30,17 +30,18 @@
       <div
         v-for='day in days'
         class='day day-header'
-        :class="{'day-weekend': (weekends.indexOf(String(day.day)) > -1)}"
+        :class="{'day-weekend': (weekends.indexOf(String(day.day)) > -1), 'today': day.isToday}"
       ><span class="day-number">{{ day.day }}</span><span class="day-weekday">{{ day.weekday }}</span></div>
     </div>
     <div class='full' v-for="contract in contracts" key="'days|' + contract.xml_id">
       <div class="real row">
         <div
           class='day'
-          v-for='day in daysInMonth'
+          v-for='day in days'
           :class="{
-            'day-with-events': (contract.jira_work_dates.indexOf(String(day)) > -1),
-            'day-weekend': (weekends.indexOf(String(day)) > -1)}"
+            'day-with-events': (contract.jira_work_dates.indexOf(String(day.day)) > -1),
+            'day-weekend': (weekends.indexOf(String(day.day)) > -1),
+            'today': day.isToday}"
           ></div>
         <div
         class="timeline timeline-plan"
@@ -114,7 +115,13 @@ export default {
       let days = []
       for (var i = 0; i < this.daysInMonth; i++) {
         let dt = new Date(this.year, this.monthIndex, i + 1)
-        days.push({day: i+1, weekday: _dayLabels[dt.getDay()]})
+        console.log('days', dt);
+
+        const isToday = (_todayComps.year === dt.getFullYear()
+          && _todayComps.month === dt.getMonth() + 1
+          && _todayComps.day === dt.getDate())
+
+        days.push({day: i+1, weekday: _dayLabels[dt.getDay()], isToday})
       }
       return days
     },
@@ -170,7 +177,8 @@ $headerMinHeight: 60px
 $dayColor: #3a3a3a
 $dayBorder: solid 1px #aaaaaa
 $dayBackgroundColor: white
-$dayWidth: 24px
+$todayBackgroundColor: red
+$dayWidth: 45px
 $dayHeight: 57px
 $rowMinHeight: $dayHeight
 $timelineHeight: $dayHeight / 3
@@ -245,6 +253,9 @@ $gridColumns: 31
   // border-bottom: $dayBorder
   border-right: $dayBorder
   cursor: default
+
+.day.today
+  background-color: $todayBackgroundColor
 
 .day-header
   text-align: center

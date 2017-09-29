@@ -29,19 +29,19 @@ export default {
   },
   methods: {
     loadMonthData(payload) {
-      console.log('monthChanged', payload);
-      axios.get(
-        '/efficiency/ajax.php?type=get_calendar_contract&year='
-          + payload.year
-          + '&month=' + payload.month
-      ).then(response => {
-        console.log('response', response);
-        this.weekends = response.data.weekends
-        this.contracts = response.data.contracts
-
-      })
-      // this.weekends = mock.weekends
-      // this.contracts = mock.contracts
+      // console.log('monthChanged', payload);
+      // axios.get(
+      //   '/efficiency/ajax.php?type=get_calendar_contract&year='
+      //     + payload.year
+      //     + '&month=' + payload.month
+      // ).then(response => {
+      //   console.log('response', response);
+      //   this.weekends = response.data.weekends
+      //   this.contracts = response.data.contracts
+      //
+      // })
+      this.weekends = mock.weekends
+      this.contracts = mock.contracts
     },
   }
 }
